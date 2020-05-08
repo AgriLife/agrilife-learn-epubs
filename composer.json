@@ -1,0 +1,17 @@
+{
+    "name": "agrilife/agrilife-learn-epubs",
+    "description": "Core functionality for the AgriLife Learn ePubs website.",
+    "license": "GPL-2.0+",
+    "authors": [
+        {
+            "name": "Zachary Watkins",
+            "email": "zachary.watkins@ag.tamu.edu"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+    },
+    "require-dev": {
+        "wp-coding-standards/wpcs": "^1.0"
+    }
+}
