@@ -6,7 +6,7 @@
             {
                 "key": "field_5eb596e9f5eff",
                 "label": "Original Author(s)",
-                "name": "authors",
+                "name": "pubauthors",
                 "type": "post_object",
                 "instructions": "",
                 "required": 0,
@@ -82,6 +82,63 @@
                         "display_format": "F j, Y g:i a",
                         "return_format": "Y-m-d H:i:s",
                         "first_day": 1
+                    }
+                ]
+            },
+            {
+                "key": "field_5eb5c7a48910b",
+                "label": "Review Records",
+                "name": "review_records",
+                "type": "repeater",
+                "instructions": "",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "collapsed": "",
+                "min": 0,
+                "max": 0,
+                "layout": "block",
+                "button_label": "Add Reviewer",
+                "sub_fields": [
+                    {
+                        "key": "field_5eb5c7af8910c",
+                        "label": "Reviewer",
+                        "name": "reviewer",
+                        "type": "text",
+                        "instructions": "",
+                        "required": 0,
+                        "conditional_logic": 0,
+                        "wrapper": {
+                            "width": "",
+                            "class": "",
+                            "id": ""
+                        },
+                        "default_value": "",
+                        "placeholder": "",
+                        "prepend": "",
+                        "append": "",
+                        "maxlength": ""
+                    },
+                    {
+                        "key": "field_5eb5c7be8910d",
+                        "label": "Date",
+                        "name": "datetime",
+                        "type": "date_time_picker",
+                        "instructions": "",
+                        "required": 0,
+                        "conditional_logic": 0,
+                        "wrapper": {
+                            "width": "",
+                            "class": "",
+                            "id": ""
+                        },
+                        "display_format": "F j, Y g:i a",
+                        "return_format": "Y-m-d H:i:s",
+                        "first_day": 0
                     }
                 ]
             }

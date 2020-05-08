@@ -54,7 +54,7 @@ class Agrilife_Learn_Epubs {
 		add_action( 'pre_get_posts', array( $this, 'pub_author_pre_get_posts' ) );
 
 		// Remove author taxonomy metaboxes in place of ACF.
-		add_action( 'add_meta_boxes_author', array( $this, 'remove_author_taxonomies_metaboxes' ) );
+		add_action( 'add_meta_boxes_pubauthor', array( $this, 'remove_author_taxonomies_metaboxes' ) );
 
 		// Genesis hooks for custom post types.
 		add_filter( 'genesis_post_info', array( $this, 'publication_post_info' ) );
@@ -133,7 +133,7 @@ class Agrilife_Learn_Epubs {
 				),
 			)
 		);
-		new \Agrilife_Learn_Epubs\Taxonomy( 'Role', 'role', array( 'publication', 'pubauthor' ) );
+		new \Agrilife_Learn_Epubs\Taxonomy( 'Role', 'role', array( 'pubauthor' ) );
 
 		/* Register post types */
 		new \Agrilife_Learn_Epubs\PostType(
@@ -281,9 +281,12 @@ class Agrilife_Learn_Epubs {
 			// Create original author output.
 			foreach ( $original_authors as $oauthor_id ) {
 				$author         = get_post( $oauthor_id );
+				$archive        = get_post_type_archive_link( 'publication' );
+				$separator      = false !== strpos( $archive, '?' ) ? '&' : '?';
 				$oauthor_pubs[] = sprintf(
-					'<a href="%s?pubauthor=%s">%s</a>',
-					get_post_type_archive_link( 'publication' ),
+					'<a href="%s%spubauthor=%s">%s</a>',
+					$archive,
+					$separator,
 					$author->post_name,
 					$author->post_title
 				);
