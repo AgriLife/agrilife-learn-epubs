@@ -65,6 +65,12 @@ class Agrilife_Learn_Epubs {
 		// Add variables to allowed query vars.
 		add_filter( 'query_vars', array( $this, 'add_query_vars' ) );
 
+		// Modify publication search form.
+		add_filter( 'get_search_form', array( $this, 'publication_search_form' ), 10, 1 );
+		add_theme_support( 'html5', array( 'search-form' ) );
+		add_filter( 'wp_dropdown_cats', array( $this, 'add_multi_select' ), 10, 2 );
+		add_filter( 'wp_dropdown_pages', array( $this, 'add_multi_select' ), 10, 2 );
+
 	}
 
 	/**
@@ -150,7 +156,10 @@ class Agrilife_Learn_Epubs {
 			array(),
 			'dashicons-portfolio',
 			array( 'title', 'editor', 'genesis-seo', 'genesis-scripts' ),
-			array( 'single' => 'single-publication.php' )
+			array(
+				'single'  => 'single-publication.php',
+				'archive' => 'archive-publication.php',
+			)
 		);
 
 		new \Agrilife_Learn_Epubs\PostType(
@@ -174,6 +183,7 @@ class Agrilife_Learn_Epubs {
 				'has_archive'         => true,
 				'rewrite'             => false,
 				'show_in_rest'        => true,
+				'hierarchical'        => true,
 			)
 		);
 
@@ -431,6 +441,150 @@ class Agrilife_Learn_Epubs {
 
 		$public_query_vars[] = 'pubauthor';
 		return $public_query_vars;
+
+	}
+
+	/**
+	 * Customize search form for publications.
+	 *
+	 * @param string $form The form string.
+	 * @since 1.0.0
+	 * @return string
+	 */
+	public function publication_search_form( $form ) {
+		if ( is_singular( 'publication' ) || is_archive( 'publication' ) ) {
+
+			$taxonomies     = get_object_taxonomies( 'publication', 'objects' );
+			$publications   = get_posts(
+				array(
+					'post_type'      => 'publication',
+					'posts_per_page' => -1,
+					'post_status'    => 'publish',
+					'fields'         => 'ids',
+				)
+			);
+			$search_filters = array(
+				'post-type' => genesis_markup(
+					array(
+						'echo'    => false,
+						'open'    => '<input %s>',
+						'close'   => '</input>',
+						'content' => '',
+						'context' => 'input',
+						'atts'    => array(
+							'type'  => 'hidden',
+							'value' => 'publication',
+							'name'  => 'post_type',
+							'id'    => 'post_type',
+						),
+					)
+				),
+			);
+
+			$search_filters['authors']  = '<div class="filter">';
+			$search_filters['authors'] .= genesis_markup(
+				array(
+					'echo'    => false,
+					'open'    => '<label %s>',
+					'close'   => '</label>',
+					'content' => 'Authors',
+					'context' => 'author-label',
+				)
+			);
+			$search_filters['authors'] .= wp_dropdown_pages(
+				array(
+					'echo'        => 0,
+					'post_type'   => 'pubauthor',
+					'name'        => 'pubauthor',
+					'value_field' => 'post_name',
+					'class'       => 'postform',
+					'multiple'    => true,
+				)
+			);
+			$search_filters['authors'] .= '</div>';
+
+			// Taxonomy filters.
+			foreach ( $taxonomies as $key => $taxonomy ) {
+				$terms                   = get_terms( array( 'taxonomy' => $key ) );
+				$search_filters[ $key ]  = '<div class="filter">';
+				$search_filters[ $key ] .= genesis_markup(
+					array(
+						'echo'    => false,
+						'open'    => '<label %s>',
+						'close'   => '</label>',
+						'content' => $taxonomy->label,
+						'context' => 'taxonomy-label',
+					)
+				);
+				$search_filters[ $key ] .= wp_dropdown_categories(
+					array(
+						'echo'        => 0,
+						'taxonomy'    => $key,
+						'name'        => $key,
+						'value_field' => 'slug',
+						'orderby'     => 'name',
+						'multiple'    => true,
+					)
+				);
+				$search_filters[ $key ] .= '</div>';
+			}
+
+			// Submit button.
+			$search_filters['submit'] = genesis_markup(
+				array(
+					'echo'    => false,
+					'open'    => '<input %s>',
+					'close'   => '</input>',
+					'content' => '',
+					'context' => 'search-form-submit',
+					'atts'    => array(
+						'type'  => 'submit',
+						'id'    => 'searchsubmit',
+						'value' => esc_attr( 'Search Publications', 'agrilife-learn-epubs' ),
+					),
+				)
+			);
+
+			$form = genesis_markup(
+				array(
+					'echo'    => false,
+					'open'    => '<form %s>',
+					'close'   => '</form>',
+					'content' => implode( '', $search_filters ),
+					'context' => 'search-form',
+					'atts'    => array(
+						'class' => 'epub-search-form',
+					),
+				)
+			);
+		}
+
+		return $form;
+
+	}
+
+	/**
+	 * Add multi-select support to publication search taxonomy and pubauthor dropdowns.
+	 *
+	 * @since 1.0.0
+	 * @param string $output      HTML output.
+	 * @param array  $parsed_args Arguments used to build the drop-down.
+	 * @return string.
+	 */
+	public function add_multi_select( $output, $parsed_args ) {
+
+		if ( isset( $parsed_args['multiple'] ) && $parsed_args['multiple'] ) {
+
+			$output = preg_replace( '/^<select/i', '<select multiple', $output );
+
+			$output = str_replace( "name='{$parsed_args['name']}'", "name='{$parsed_args['name']}[]'", $output );
+
+			foreach ( array_map( 'trim', explode( ',', $parsed_args['selected'] ) ) as $value ) {
+				$output = str_replace( "value=\"{$value}\"", "value=\"{$value}\" selected", $output );
+			}
+		}
+
+		return $output;
 
 	}
 
