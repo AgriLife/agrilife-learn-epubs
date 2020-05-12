@@ -44,7 +44,6 @@ cache
 node_modules
 !node_modules/foundation-sites/dist/js/*.js
 .sass-cache
-css/*.css*
 js/*.concat.js*
 js/post-type-tile-filters.js
 js/block-livewhale.js

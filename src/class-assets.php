@@ -29,9 +29,6 @@ class Assets {
 	 */
 	public function __construct() {
 
-		// Register script for single-agency page template.
-		add_action( 'wp_enqueue_scripts', array( $this, 'register_agency_script' ) );
-
 		// Register global styles used in the theme.
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_styles' ), 2 );
 
@@ -48,29 +45,13 @@ class Assets {
 	 */
 	public function register_styles() {
 
-		global $wp_query;
-		$template_name = get_post_meta( $wp_query->post->ID, '_wp_page_template', true );
-
 		wp_register_style(
-			'agrilife-styles',
-			ALEPB_DIR_URL . 'css/agrilife.css',
-			array( 'agriflex-default-styles' ),
-			filemtime( ALEPB_DIR_PATH . 'css/agrilife.css' ),
+			'agrilife-learn-epub-styles',
+			ALEPB_DIR_URL . 'css/style.css',
+			false,
+			filemtime( ALEPB_DIR_PATH . 'css/style.css' ),
 			'screen'
 		);
-
-		// If body class is page-template-default or post-template-default.
-		if ( is_singular( 'post' ) || ( is_singular( 'page' ) && ( ! $template_name || 'default' === $template_name ) ) ) {
-
-			wp_register_style(
-				'agrilife-default-template-styles',
-				ALEPB_DIR_URL . 'css/template-default.css',
-				array( 'agrilife-styles' ),
-				filemtime( ALEPB_DIR_PATH . 'css/template-default.css' ),
-				'screen'
-			);
-
-		}
 
 	}
 
@@ -82,35 +63,11 @@ class Assets {
 	 */
 	public function enqueue_styles() {
 
-		global $wp_query;
-		$template_name = get_post_meta( $wp_query->post->ID, '_wp_page_template', true );
+		if ( 'publication' === get_post_type() || is_post_type_archive( 'publication' ) ) {
 
-		wp_enqueue_style( 'agrilife-styles' );
-
-		// If body class is page-template-default or post-template-default.
-		if ( is_singular( 'post' ) || ( is_singular( 'page' ) && ( ! $template_name || 'default' === $template_name ) ) ) {
-
-			wp_enqueue_style( 'agrilife-default-template-styles' );
+			wp_enqueue_style( 'agrilife-learn-epub-styles' );
 
 		}
-
-	}
-
-	/**
-	 * Registers the agency script
-	 *
-	 * @since 1.0.0
-	 * @return void
-	 */
-	public function register_agency_script() {
-
-		wp_register_script(
-			'agrilife-learn-epubs-single-agency',
-			ALEPB_DIR_URL . 'js/exceptional-item.min.js',
-			array(),
-			filemtime( ALEPB_DIR_PATH . 'js/exceptional-item.min.js' ),
-			true
-		);
 
 	}
 

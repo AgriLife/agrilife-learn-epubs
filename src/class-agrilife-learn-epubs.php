@@ -47,6 +47,9 @@ class Agrilife_Learn_Epubs {
 		// Add custom fields.
 		new \Agrilife_Learn_Epubs\CustomFields();
 
+		// Add assets.
+		$epub_assets = new \Agrilife_Learn_Epubs\Assets();
+
 		// Init action hook.
 		add_action( 'init', array( $this, 'init' ) );
 
