@@ -21,4 +21,6 @@
 	padding-bottom: 12.8px;
 }
 
+figure.wp-block-table {
+	overflow-x: auto;
 }
