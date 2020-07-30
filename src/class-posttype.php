@@ -84,16 +84,19 @@ class PostType {
 
 		$this->post_type = $slug;
 
-		if ( array_key_exists( 'single', $templates ) ) {
-			$this->single_file = $templates['single'];
-		}
+		if ( is_array( $templates ) ) {
 
-		if ( array_key_exists( 'archive', $templates ) ) {
-			$this->archive_file = $templates['archive'];
-		}
+			if ( array_key_exists( 'single', $templates ) ) {
+				$this->single_file = $templates['single'];
+			}
 
-		if ( array_key_exists( 'search', $templates ) ) {
-			$this->search_file = $templates['search'];
+			if ( array_key_exists( 'archive', $templates ) ) {
+				$this->archive_file = $templates['archive'];
+			}
+
+			if ( array_key_exists( 'search', $templates ) ) {
+				$this->search_file = $templates['search'];
+			}
 		}
 
 		$singular = $name['singular'];
